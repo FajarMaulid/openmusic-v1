@@ -4,23 +4,17 @@ class NotesHandler {
   constructor(service, validator) {
     this._service = service;
     this._validator = validator;
-
-    this.postNoteHandler = this.postNoteHandler.bind(this);
-    this.getNotesHandler = this.getNotesHandler.bind(this);
-    this.getNoteByIdHandler = this.getNoteByIdHandler.bind(this);
-    this.putNoteByIdHandler = this.putNoteByIdHandler.bind(this);
-    this.deleteNoteByIdHandler = this.deleteNoteByIdHandler.bind(this);
   }
 
-  async postNoteHandler(request, h) {
-    this._validator.validateNotePayload(request.payload);
-    const { title = 'untitled', body, tags } = request.payload;
+  async postAlbumHandler(request, h) {
+    this._validator.validateAlbumPayload(request.payload);
+    const { name, year } = request.payload;
 
-    const noteId = await this._service.addNote({ title, body, tags });
+    const noteId = await this._service.addAlbum({ name, year });
 
     const response = h.response({
       status: 'success',
-      message: 'Catatan berhasil ditambahkan',
+      message: 'Album berhasil ditambahkan',
       data: {
         noteId,
       },
