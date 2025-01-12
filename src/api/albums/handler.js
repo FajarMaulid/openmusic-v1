@@ -1,9 +1,12 @@
-// const ClientError = require('../../exceptions/ClientError');
-
-class NotesHandler {
+class AlbumsHandler {
   constructor(service, validator) {
     this._service = service;
     this._validator = validator;
+
+    this.postAlbumHandler = this.postAlbumHandler.bind(this);
+    this.getAlbumByIdHandler = this.getAlbumByIdHandler.bind(this);
+    this.putAlbumByIdHandler = this.putAlbumByIdHandler.bind(this);
+    this.deleteAlbumByIdHandler = this.deleteAlbumByIdHandler.bind(this);
   }
 
   async postAlbumHandler(request, h) {
@@ -23,19 +26,9 @@ class NotesHandler {
     return response;
   }
 
-  async getNotesHandler() {
-    const notes = await this._service.getNotes();
-    return {
-      status: 'success',
-      data: {
-        notes,
-      },
-    };
-  }
-
-  async getNoteByIdHandler(request) {
+  async getAlbumByIdHandler(request) {
     const { id } = request.params;
-    const note = await this._service.getNoteById(id);
+    const note = await this._service.getAlbumById(id);
     return {
       status: 'success',
       data: {
@@ -44,27 +37,27 @@ class NotesHandler {
     };
   }
 
-  async putNoteByIdHandler(request) {
-    this._validator.validateNotePayload(request.payload);
+  async putAlbumByIdHandler(request) {
+    this._validator.validateAlbumePayload(request.payload);
     const { id } = request.params;
 
-    await this._service.editNoteById(id, request.payload);
+    await this._service.editAlbumById(id, request.payload);
 
     return {
       status: 'success',
-      message: 'Catatan berhasil diperbarui',
+      message: 'Album berhasil diperbarui',
     };
   }
 
-  async deleteNoteByIdHandler(request) {
+  async deleteAlbumByIdHandler(request) {
     const { id } = request.params;
-    await this._service.deleteNoteById(id);
+    await this._service.deleteAlbumById(id);
 
     return {
       status: 'success',
-      message: 'Catatan berhasil dihapus',
+      message: 'Album berhasil dihapus',
     };
   }
 }
 
-module.exports = NotesHandler;
+module.exports = AlbumsHandler;
