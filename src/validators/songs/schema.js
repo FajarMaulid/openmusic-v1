@@ -5,8 +5,8 @@ const SongPayloadSchema = Joi.object({
   year: Joi.number().required(),
   genre: Joi.string().required(),
   performer: Joi.string().required(),
-  duration: Joi.number(),
-  albumid: Joi.string(),
+  duration: Joi.number().optional(),
+  albumId: Joi.string().optional(),
 });
 
 module.exports = { SongPayloadSchema };
