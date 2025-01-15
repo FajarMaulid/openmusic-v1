@@ -61,7 +61,7 @@ class PlaylistsService {
     return result.rows[0].id;
   }
 
-  async getPlaylist(owner) {
+  async getPlaylists(owner) {
     const query = {
       text: `SELECT playlists.* FROM playlists
       LEFT JOIN collaborations ON collaborations.playlist_id = playlists.id
@@ -74,7 +74,7 @@ class PlaylistsService {
     return result.rows.map(mapDBToModel);
   }
 
-  async deletePlaylist(id) {
+  async deletePlaylistById(id) {
     const query = {
       text: 'DELETE FROM playlists WHERE id = $1 RETURNING id',
       values: [id],
