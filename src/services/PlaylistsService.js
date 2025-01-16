@@ -9,7 +9,7 @@ const AuthorizationError = require('../exceptions/AuthorizationError');
 
 class PlaylistsService {
   constructor(CollaborationService) {
-    this._pool = Pool;
+    this._pool = new Pool();
     this._collaborationService = CollaborationService;
   }
 

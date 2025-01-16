@@ -6,7 +6,7 @@ const NotFoundError = require('../exceptions/NotFoundError');
 
 class PlaylistsSongsService {
   constructor() {
-    this._pool = Pool;
+    this._pool = new Pool();
   }
 
   async addSongToPlaylist(playlistId, songId) {
