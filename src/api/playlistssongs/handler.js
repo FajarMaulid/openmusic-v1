@@ -1,10 +1,11 @@
 const autoBind = require('auto-bind');
 
 class PlaylistsSongsHandler {
-  constructor(playlistsService, playlistsSongsService, activitiesHandler, validator) {
+  constructor(playlistsService, playlistsSongsService, activitiesService, songsService, validator) {
     this._playlistsService = playlistsService;
     this._playlistsSongsService = playlistsSongsService;
-    this._activitiesHandler = activitiesHandler;
+    this._activitiesService = activitiesService;
+    this._songsService = songsService;
     this._validator = validator;
 
     autoBind(this);
@@ -18,6 +19,7 @@ class PlaylistsSongsHandler {
     const { id: credentialId } = request.auth.credentials;
 
     await this._playlistsService.verifyPlaylistAccess(playlistId, credentialId);
+    await this._songsService.getSongById(songId);
 
     await this._activitiesService.addPlaylistSongActivity(playlistId, songId, credentialId, 'add');
     await this._playlistsSongsService.addSongToPlaylist(playlistId, songId);
@@ -53,6 +55,7 @@ class PlaylistsSongsHandler {
     const { id: credentialId } = request.auth.credentials;
 
     await this._playlistsService.verifyPlaylistAccess(playlistId, credentialId);
+    await this._songsService.getSongById(songId);
 
     await this._activitiesService.addPlaylistSongActivity(playlistId, songId, credentialId, 'delete');
     await this._playlistsSongsService.deleteSongFromPlaylist(playlistId, songId);

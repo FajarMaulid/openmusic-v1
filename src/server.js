@@ -115,6 +115,7 @@ const init = async () => {
       options: {
         collaborationsService,
         playlistsService,
+        usersService,
         validator: CollaborationsValidator,
       },
     },
@@ -130,24 +131,23 @@ const init = async () => {
       options: {
         playlistsService,
         playlistsSongsService,
-        playlistsSongsActivitiesService,
+        activitiesService: playlistsSongsActivitiesService,
+        songsService,
         validator: PlaylistsSongsValidator,
       },
     },
     {
       plugin: playlistsSongsActivities,
       options: {
-        playlistsSongsActivitiesService,
+        activitiesService: playlistsSongsActivitiesService,
         playlistsService,
       },
     },
   ]);
 
   server.ext('onPreResponse', (request, h) => {
-    // mendapatkan konteks response dari request
     const { response } = request;
 
-    // penanganan client error secara internal.
     if (response instanceof Error) {
       if (response instanceof ClientError) {
         const newResponse = h.response({
@@ -161,6 +161,7 @@ const init = async () => {
       if (!response.isServer) {
         return h.continue;
       }
+      console.error(response);
 
       const newResponse = h.response({
         status: 'error',

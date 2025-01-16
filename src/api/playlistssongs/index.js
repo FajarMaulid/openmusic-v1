@@ -7,13 +7,15 @@ module.exports = {
   register: async (server, {
     playlistsService,
     playlistsSongsService,
-    activitiesHandler,
+    activitiesService,
+    songsService,
     validator,
   }) => {
     const playlistsSongsHandler = new PlaylistsSongsHandler(
       playlistsService,
       playlistsSongsService,
-      activitiesHandler,
+      activitiesService,
+      songsService,
       validator,
     );
     server.route(routes(playlistsSongsHandler));

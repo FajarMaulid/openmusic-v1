@@ -1,5 +1,6 @@
 const { Pool } = require('pg');
 const { nanoid } = require('nanoid');
+const autoBind = require('auto-bind');
 
 const InvariantError = require('../exceptions/InvariantError');
 const NotFoundError = require('../exceptions/NotFoundError');
@@ -7,15 +8,17 @@ const NotFoundError = require('../exceptions/NotFoundError');
 class PlaylistsSongsActivitiesService {
   constructor() {
     this._pool = new Pool();
+
+    autoBind(this);
   }
 
-  async addPlaylistSongActivity(playlistId, songId, userid, action) {
+  async addPlaylistSongActivity(playlistId, songId, userId, action) {
     const id = `playlist_song_activity-${nanoid(16)}`;
     const time = new Date().toISOString();
 
     const query = {
-      text: 'INSERT INTO playlists_songs_activities VALUES($1, $2, $3, $4, $5, %6) RETURNING id',
-      values: [id, playlistId, songId, userid, action, time],
+      text: 'INSERT INTO playlists_songs_activities VALUES($1, $2, $3, $4, $5, $6) RETURNING id',
+      values: [id, playlistId, songId, userId, action, time],
     };
 
     const result = await this._pool.query(query);
@@ -25,14 +28,15 @@ class PlaylistsSongsActivitiesService {
     }
   }
 
-  async getplaylistSongActivities(playlistId) {
+  async getPlaylistSongActivities(playlistId) {
     const query = {
       text: `SELECT users.username, songs.title, playlists_songs_activities.action, playlists_songs_activities.time
       FROM playlists_songs_activities
       LEFT JOIN users ON playlists_songs_activities.user_id = users.id
       LEFT JOIN songs ON playlists_songs_activities.song_id = songs.id
       WHERE playlists_songs_activities.playlist_id = $1
-      GROUP BY playlists_songs_activities.id`,
+      GROUP BY users.username, songs.title, playlists_songs_activities.action, playlists_songs_activities.time
+      ORDER BY playlists_songs_activities.time ASC`,
       values: [playlistId],
     };
 

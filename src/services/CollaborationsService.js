@@ -1,10 +1,14 @@
 const { Pool } = require('pg');
 const { nanoid } = require('nanoid');
+const autoBind = require('auto-bind');
+
 const InvariantError = require('../exceptions/InvariantError');
 
 class CollaborationsService {
   constructor() {
     this._pool = new Pool();
+
+    autoBind(this);
   }
 
   async addCollaboration(playlistId, userId) {

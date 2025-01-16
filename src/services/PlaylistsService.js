@@ -1,7 +1,6 @@
 const { Pool } = require('pg');
 const { nanoid } = require('nanoid');
-
-const { mapDBToModel } = require('../utils/playlists');
+const autoBind = require('auto-bind');
 
 const InvariantError = require('../exceptions/InvariantError');
 const NotFoundError = require('../exceptions/NotFoundError');
@@ -11,6 +10,8 @@ class PlaylistsService {
   constructor(CollaborationService) {
     this._pool = new Pool();
     this._collaborationService = CollaborationService;
+
+    autoBind(this);
   }
 
   async verifyPlaylistOwner(id, owner) {
@@ -18,9 +19,10 @@ class PlaylistsService {
       text: 'SELECT * FROM playlists WHERE id = $1',
       values: [id],
     };
+
     const result = await this._pool.query(query);
     if (!result.rows.length) {
-      throw new NotFoundError('Catatan tidak ditemukan');
+      throw new NotFoundError('Playlist tidak ditemukan');
     }
     const playlist = result.rows[0];
     if (playlist.owner !== owner) {
@@ -54,7 +56,7 @@ class PlaylistsService {
 
     const result = await this._pool.query(query);
 
-    if (!result.rows[0].id) {
+    if (!result.rows.length) {
       throw new InvariantError('Playlists gagal ditambahkan');
     }
 
@@ -67,12 +69,12 @@ class PlaylistsService {
       LEFT JOIN collaborations ON collaborations.playlist_id = playlists.id
       LEFT JOIN users ON users.id = playlists.owner
       WHERE playlists.owner = $1 OR collaborations.user_id = $1
-      GROUP BY playlists.id`,
+      GROUP BY playlists.id, playlists.name, users.username`,
       values: [owner],
     };
 
     const result = await this._pool.query(query);
-    return result.rows.map(mapDBToModel);
+    return result.rows;
   }
 
   async deletePlaylistById(id) {

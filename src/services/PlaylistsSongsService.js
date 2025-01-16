@@ -1,5 +1,6 @@
 const { Pool } = require('pg');
 const { nanoid } = require('nanoid');
+const autoBind = require('auto-bind');
 
 const InvariantError = require('../exceptions/InvariantError');
 const NotFoundError = require('../exceptions/NotFoundError');
@@ -7,6 +8,8 @@ const NotFoundError = require('../exceptions/NotFoundError');
 class PlaylistsSongsService {
   constructor() {
     this._pool = new Pool();
+
+    autoBind(this);
   }
 
   async addSongToPlaylist(playlistId, songId) {
@@ -41,9 +44,9 @@ class PlaylistsSongsService {
       LEFT JOIN collaborations ON collaborations.playlist_id = playlists.id
       LEFT JOIN users ON users.id = playlists.owner
       LEFT JOIN playlists_songs ON playlists_songs.playlist_id = playlists.id
-      LEFT JOIN songs ON songs.id = playlists_songs.song_id = songs.id
+      LEFT JOIN songs ON songs.id = playlists_songs.song_id
       WHERE playlists.id = $1
-      GROUP BY playlists.id`,
+      GROUP BY playlists.id, playlists.name, users.username`,
       values: [playlistId],
     };
 
@@ -53,7 +56,7 @@ class PlaylistsSongsService {
       throw new NotFoundError('Playlist tidak ditemukan');
     }
 
-    return result.rows;
+    return result.rows[0];
   }
 
   async deleteSongFromPlaylist(playlistId, songId) {
@@ -64,7 +67,7 @@ class PlaylistsSongsService {
 
     const result = await this._pool.query(query);
 
-    if (!result.rows[0].id) {
+    if (!result.rows.length) {
       throw new NotFoundError('Lagu tidak dapat dihapus. Id tidak ditemukan');
     }
   }

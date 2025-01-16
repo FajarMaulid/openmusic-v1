@@ -1,9 +1,13 @@
 const { Pool } = require('pg');
+const autoBind = require('auto-bind');
+
 const InvariantError = require('../exceptions/InvariantError');
 
 class AuthenticationsService {
   constructor() {
     this._pool = new Pool();
+
+    autoBind(this);
   }
 
   async addRefreshToken(token) {
