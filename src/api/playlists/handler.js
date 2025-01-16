@@ -39,7 +39,7 @@ class PlaylistsHandler {
     };
   }
 
-  async deletePlaylistById(request) {
+  async deletePlaylistByIdHandler(request) {
     const { id } = request.params;
     const { id: credentialId } = request.auth.credentials;
 
