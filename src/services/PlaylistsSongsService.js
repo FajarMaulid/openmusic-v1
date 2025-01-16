@@ -1,8 +1,6 @@
 const { Pool } = require('pg');
 const { nanoid } = require('nanoid');
 
-const { mapDBToModel } = require('../utils/playlists');
-
 const InvariantError = require('../exceptions/InvariantError');
 const NotFoundError = require('../exceptions/NotFoundError');
 
@@ -55,7 +53,7 @@ class PlaylistsSongsService {
       throw new NotFoundError('Playlist tidak ditemukan');
     }
 
-    return result.rows.map(mapDBToModel);
+    return result.rows;
   }
 
   async deleteSongFromPlaylist(playlistId, songId) {

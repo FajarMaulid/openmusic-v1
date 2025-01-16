@@ -11,9 +11,35 @@ const albums = require('./api/albums');
 const AlbumsService = require('./services/AlbumsService');
 const AlbumsValidator = require('./validators/albums');
 
+const users = require('./api/users');
+const UsersService = require('./services/UsersService');
+const UsersValidator = require('./validators/users');
+
+const authentications = require('./api/authentications');
+const AuthenticationsService = require('./services/AuthenticationsService');
+const TokenManager = require('./tokenize/TokenManager');
+const AuthenticationsValidator = require('./validators/authentications');
+
+const collaborations = require('./api/collaborations');
+const CollaborationsService = require('./services/CollaborationsService');
+const CollaborationsValidator = require('./validators/collaborations');
+
+const playlists = require('./api/playlists');
+const PlaylistsService = require('./services/PlaylistsService');
+const PlaylistsValidator = require('./validators/playlists');
+
+const playlistsSongs = require('./api/playlistsSongs');
+const PlaylistsSongsService = require('./services/PlaylistsSongsService');
+const PlaylistsSongsValidator = require('./validators/playlistsSongs');
+
+const playlistsSongsActivities = require('./api/playlistsSongsActivities');
+const PlaylistsSongsActivitiesService = require('./services/PlaylistsSongsActivitiesService');
+
+
 const ClientError = require('./exceptions/ClientError');
 
 const init = async () => {
+  const collaborationsService = new CollaborationsService();
   const songsService = new SongsService();
   const albumsService = new AlbumsService();
 
