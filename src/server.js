@@ -161,7 +161,7 @@ const init = async () => {
       if (!response.isServer) {
         return h.continue;
       }
-      console.error(response);
+      // console.error(response);
 
       const newResponse = h.response({
         status: 'error',
