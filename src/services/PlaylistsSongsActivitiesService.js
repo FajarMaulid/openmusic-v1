@@ -3,7 +3,6 @@ const { nanoid } = require('nanoid');
 const autoBind = require('auto-bind');
 
 const InvariantError = require('../exceptions/InvariantError');
-const NotFoundError = require('../exceptions/NotFoundError');
 
 class PlaylistsSongsActivitiesService {
   constructor() {
@@ -41,10 +40,6 @@ class PlaylistsSongsActivitiesService {
     };
 
     const result = await this._pool.query(query);
-
-    if (!result.rows.length) {
-      throw new NotFoundError('Id playlist tidak ditemukan');
-    }
 
     return result.rows;
   }

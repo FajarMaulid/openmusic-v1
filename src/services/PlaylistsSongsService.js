@@ -52,10 +52,6 @@ class PlaylistsSongsService {
 
     const result = await this._pool.query(query);
 
-    if (!result.rows.length) {
-      throw new NotFoundError('Playlist tidak ditemukan');
-    }
-
     return result.rows[0];
   }
 
