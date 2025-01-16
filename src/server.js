@@ -35,13 +35,17 @@ const PlaylistsSongsValidator = require('./validators/playlistsSongs');
 const playlistsSongsActivities = require('./api/playlistsSongsActivities');
 const PlaylistsSongsActivitiesService = require('./services/PlaylistsSongsActivitiesService');
 
-
 const ClientError = require('./exceptions/ClientError');
 
 const init = async () => {
   const collaborationsService = new CollaborationsService();
+  const authenticationsService = new AuthenticationsService();
+  const usersService = new UsersService();
   const songsService = new SongsService();
   const albumsService = new AlbumsService();
+  const playlistsService = new PlaylistsService(collaborationsService);
+  const playlistsSongsService = new PlaylistsSongsService();
+  const playlistsSongsActivitiesService = new PlaylistsSongsActivitiesService();
 
   const server = Hapi.server({
     port: process.env.PORT,
@@ -88,6 +92,53 @@ const init = async () => {
       options: {
         service: songsService,
         validator: SongsValidator,
+      },
+    },
+    {
+      plugin: users,
+      options: {
+        service: usersService,
+        validator: UsersValidator,
+      },
+    },
+    {
+      plugin: authentications,
+      options: {
+        authenticationsService,
+        usersService,
+        tokenManager: TokenManager,
+        validator: AuthenticationsValidator,
+      },
+    },
+    {
+      plugin: collaborations,
+      options: {
+        collaborationsService,
+        playlistsService,
+        validator: CollaborationsValidator,
+      },
+    },
+    {
+      plugin: playlists,
+      options: {
+        service: playlistsService,
+        validator: PlaylistsValidator,
+      },
+    },
+    {
+      plugin: playlistsSongs,
+      options: {
+        playlistsService,
+        playlistsSongsService,
+        playlistsSongsActivitiesService,
+        validator: PlaylistsSongsValidator,
+      },
+    },
+    {
+      plugin: playlistsSongsActivities,
+      options: {
+        playlistsSongsActivitiesService,
+        playlistsService,
       },
     },
   ]);
