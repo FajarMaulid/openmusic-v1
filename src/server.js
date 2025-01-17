@@ -91,6 +91,7 @@ const init = async () => {
       plugin: songs,
       options: {
         service: songsService,
+        albumsService,
         validator: SongsValidator,
       },
     },
@@ -161,7 +162,7 @@ const init = async () => {
       if (!response.isServer) {
         return h.continue;
       }
-      // console.error(response);
+      console.error(response);
 
       const newResponse = h.response({
         status: 'error',
