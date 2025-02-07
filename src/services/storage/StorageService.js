@@ -1,4 +1,5 @@
 const fs = require('fs');
+const autoBind = require('auto-bind');
 
 class StorageService {
   constructor(folder) {
@@ -7,6 +8,8 @@ class StorageService {
     if (!fs.existsSync(folder)) {
       fs.mkdirSync(folder, { recursive: true });
     }
+
+    autoBind(this);
   }
 
   writeFile(file, meta) {
