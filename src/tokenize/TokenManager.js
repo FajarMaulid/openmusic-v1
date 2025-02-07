@@ -1,6 +1,7 @@
 const Jwt = require('@hapi/jwt');
 const InvariantError = require('../exceptions/InvariantError');
 
+/* eslint-disable no-undef */
 const TokenManager = {
   generateAccessToken: (payload) => Jwt.token.generate(payload, process.env.ACCESS_TOKEN_KEY),
   generateRefreshToken: (payload) => Jwt.token.generate(payload, process.env.REFRESH_TOKEN_KEY),
@@ -15,5 +16,6 @@ const TokenManager = {
     }
   },
 };
+/* eslint-disable no-undef */
 
 module.exports = TokenManager;

@@ -2,6 +2,8 @@ require('dotenv').config();
 
 const Hapi = require('@hapi/hapi');
 const Jwt = require('@hapi/jwt');
+const Inert = require('@hapi/inert');
+// const path = require('path');
 
 const songs = require('./api/songs');
 const SongsService = require('./services/SongsService');
@@ -35,6 +37,10 @@ const PlaylistsSongsValidator = require('./validators/playlistsSongs');
 const playlistsSongsActivities = require('./api/playlistsSongsActivities');
 const PlaylistsSongsActivitiesService = require('./services/PlaylistsSongsActivitiesService');
 
+const _exports = require('./api/exports');
+const ProducerService = require('./services/rabbitmq/ProducerService');
+const ExportsValidator = require('./validators/exports');
+
 const ClientError = require('./exceptions/ClientError');
 
 const init = async () => {
@@ -60,6 +66,9 @@ const init = async () => {
   await server.register([
     {
       plugin: Jwt,
+    },
+    {
+      plugin: Inert,
     },
   ]);
 
@@ -144,6 +153,14 @@ const init = async () => {
         playlistsService,
       },
     },
+    {
+      plugin: _exports,
+      options: {
+        service: ProducerService,
+        validator: ExportsValidator,
+        playlistsService,
+      },
+    },
   ]);
 
   server.ext('onPreResponse', (request, h) => {
@@ -162,7 +179,7 @@ const init = async () => {
       if (!response.isServer) {
         return h.continue;
       }
-      // console.error(response);
+      console.error(response);
 
       const newResponse = h.response({
         status: 'error',
