@@ -8,8 +8,7 @@
     "lint": "eslint ./src/",
     "lint:fix": "eslint ./src/ --fix",
     "migrate": "node-pg-migrate",
-    "migrate:down": "npx node-pg-migrate down all",
-    "migrate:reset": "npx node-pg-migrate reset"
+    "migrate:reset": "node-pg-migrate down 0"
   },
   "keywords": [],
   "author": "",
